@@ -68,7 +68,7 @@
             android:id="@+id/editCategoria"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ex.: Salario" />
+            android:hint="Categoria: Ex.: Salario" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -88,7 +88,7 @@
             android:id="@+id/editDescricao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ex.: Salario mensal" />
+            android:hint="Titulo: Ex.: Salario mensal" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -106,5 +106,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_check_black_24dp"
         tools:ignore="VectorDrawableCompat"
-        android:onClick="salvarDespesa"/>
+        android:onClick="confirmDespesa"/>
 </android.support.constraint.ConstraintLayout>

@@ -43,13 +43,14 @@ public class ReceitaActivity extends AppCompatActivity {
 
     public void salvarReceita(View view){
         if (validarCamposReceita()) {
-            movimentacao = new Movimentacao(DateCustom.mesAno(data.getText().toString()), categoria.getText().toString(), descricao.getText().toString(), "receita", Double.parseDouble(valor.getText().toString()));
+            movimentacao = new Movimentacao(DateCustom.mesAno(data.getText().toString()), categoria.getText().toString(), descricao.getText().toString(), "receita", Double.parseDouble(valor.getText().toString()), data.getText().toString());
 
             receitaGerada = Double.parseDouble(valor.getText().toString());
             Double result = receitaTotal + receitaGerada;
             atualizarReceita(result);
 
             movimentacao.salvar(data.getText().toString());
+            finish();
         }
     }
     public Boolean validarCamposReceita(){

@@ -64,7 +64,7 @@ public class MainActivity extends IntroActivity {
 
     public void verificadorLogin(){
         auth = ConfiguraçãoFirebase.getFirebaseAuth();
-   //     auth.signOut();
+
         if(auth.getCurrentUser() != null){
             startActivity(new Intent(MainActivity.this, PrincipalActivity.class));
             finish();

@@ -21,129 +21,6 @@ import br.com.techsantanna.seorganize.helper.DateCustom;
 import br.com.techsantanna.seorganize.model.Movimentacao;
 import br.com.techsantanna.seorganize.model.Usuario;
 
-/*public class DespesasActivity extends AppCompatActivity {
-
-    private TextInputEditText campoData, campoCategoria, campoDescricao;
-    private EditText campoValor;
-    private Movimentacao movimentacao;
-    private DatabaseReference firebaseRef = ConfiguraçãoFirebase.getFireBaseDatabase();
-    private FirebaseAuth autenticacao = ConfiguraçãoFirebase.getFirebaseAuth();
-    private Double despesaTotal;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_despesas);
-
-        campoValor = findViewById(R.id.editValor);
-        campoData = findViewById(R.id.editData);
-        campoCategoria = findViewById(R.id.editCategoria);
-        campoDescricao = findViewById(R.id.editDescricao);
-
-        //Preenche o campo data com a date atual
-        campoData.setText( DateCustom.dataAtual() );
-        recuperarDespesaTotal();
-
-    }
-
-    public void salvarDespesa(View view){
-
-        if ( validarCamposDespesa() ){
-
-            movimentacao = new Movimentacao();
-            String data = campoData.getText().toString();
-            Double valorRecuperado = Double.parseDouble(campoValor.getText().toString());
-
-            movimentacao.setValor( valorRecuperado );
-            movimentacao.setCategoria( campoCategoria.getText().toString() );
-            movimentacao.setDescricao( campoDescricao.getText().toString() );
-            movimentacao.setData( data );
-            movimentacao.setTipo( "d" );
-
-            Double despesaAtualizada = despesaTotal + valorRecuperado;
-            atualizarDespesa( despesaAtualizada );
-
-            movimentacao.salvar( data );
-
-        }
-
-
-    }
-
-    public Boolean validarCamposDespesa(){
-
-        String textoValor = campoValor.getText().toString();
-        String textoData = campoData.getText().toString();
-        String textoCategoria = campoCategoria.getText().toString();
-        String textoDescricao = campoDescricao.getText().toString();
-
-        if ( !textoValor.isEmpty() ){
-            if ( !textoData.isEmpty() ){
-                if ( !textoCategoria.isEmpty() ){
-                    if ( !textoDescricao.isEmpty() ){
-                        return true;
-                    }else {
-                        Toast.makeText(DespesasActivity.this,
-                                "Descrição não foi preenchida!",
-                                Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                }else {
-                    Toast.makeText(DespesasActivity.this,
-                            "Categoria não foi preenchida!",
-                            Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            }else {
-                Toast.makeText(DespesasActivity.this,
-                        "Data não foi preenchida!",
-                        Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        }else {
-            Toast.makeText(DespesasActivity.this,
-                    "Valor não foi preenchido!",
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-
-    }
-
-    public void recuperarDespesaTotal(){
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.CodificarBase64( emailUsuario );
-        DatabaseReference usuarioRef = firebaseRef.child("usuarios").child( idUsuario );
-
-        usuarioRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Usuario usuario = dataSnapshot.getValue( Usuario.class );
-                despesaTotal = usuario.getDespesaTotal();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    public void atualizarDespesa(Double despesa){
-
-        String emailUsuario = autenticacao.getCurrentUser().getEmail();
-        String idUsuario = Base64Custom.CodificarBase64( emailUsuario );
-        DatabaseReference usuarioRef = firebaseRef.child("usuarios").child( idUsuario );
-
-        usuarioRef.child("despesaTotal").setValue(despesa);
-
-    }
-
-}
-*/
-
 public class DespesasActivity extends AppCompatActivity {
 
     private TextInputEditText data, categoria, descricao;
@@ -158,28 +35,32 @@ public class DespesasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_despesas);
 
+        //recupera id's
         valor = findViewById(R.id.editValor);
         data = findViewById(R.id.editData);
         categoria = findViewById(R.id.editCategoria);
         descricao = findViewById(R.id.editDescricao);
 
+        //Recupera o dia atual e recupera a despesa total para somar com a atual
         data.setText(DateCustom.dataAtual());
         recuperarDespesa();
     }
+
+    /**Botão de salvar as despesas registradas*/
     public void confirmDespesa(View view){
         if(validarCamposDespesa()) {
-            movimentacao = new Movimentacao(data.getText().toString(), categoria.getText().toString(), descricao.getText().toString(), "despesa", Double.parseDouble(valor.getText().toString()));
-
+            movimentacao = new Movimentacao(data.getText().toString(), categoria.getText().toString(), descricao.getText().toString(), "despesa", Double.parseDouble(valor.getText().toString()), data.getText().toString());
+            //Somando despesas do usuario
             despesaGerada = Double.parseDouble(valor.getText().toString());
             Double despesa = despesaTotal + despesaGerada;
             atualizarDespesa(despesa);
-
+            //salvando alterações e voltando para tela principal
             movimentacao.salvar(data.getText().toString());
-
+            finish();
 
         }
     }
-
+    /**Verificador de campos estão preenchidos*/
     public Boolean validarCamposDespesa(){
         if(!valor.getText().toString().isEmpty() && !data.getText().toString().isEmpty() && !categoria.getText().toString().isEmpty() && !descricao.getText().toString().isEmpty()){
             return true;
@@ -189,6 +70,7 @@ public class DespesasActivity extends AppCompatActivity {
         }
     }
 
+    /**Recuper o total de despesas do usuario*/
     public void recuperarDespesa(){
         final DatabaseReference usarioRef = reference.child("usuarios").child(Base64Custom.CodificarBase64(auth.getCurrentUser().getEmail()));
         usarioRef.addValueEventListener(new ValueEventListener() {
@@ -204,7 +86,7 @@ public class DespesasActivity extends AppCompatActivity {
             }
         });
     }
-
+    /**Atualiza valor da despesa total*/
     public void atualizarDespesa(Double despesa){
         reference.child("usuarios").child(Base64Custom.CodificarBase64(auth.getCurrentUser().getEmail())).child("despesaTotal").setValue(despesa);
     }

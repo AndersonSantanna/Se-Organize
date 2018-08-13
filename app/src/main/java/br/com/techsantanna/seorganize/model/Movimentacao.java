@@ -7,23 +7,40 @@ import br.com.techsantanna.seorganize.helper.Base64Custom;
 import br.com.techsantanna.seorganize.helper.DateCustom;
 
 public class Movimentacao {
-    private String data, categoria, descricao, tipo;
+    private String data, categoria, descricao, tipo, key, dataBD;
     private double valor;
 
     public Movimentacao() {
     }
 
-    public Movimentacao(String data, String categoria, String descricao, String tipo, double valor) {
+    public Movimentacao(String data, String categoria, String descricao, String tipo, double valor, String dataBD) {
         this.data = data;
+        this.dataBD = dataBD;
         this.categoria = categoria;
         this.descricao = descricao;
         this.tipo = tipo;
         this.valor = valor;
     }
-
+    /**Salvando alterações no BD*/
     public void salvar(String dataEscolhida){
         DatabaseReference reference = ConfiguraçãoFirebase.getFireBaseDatabase();
         reference.child("movimentação").child(Base64Custom.CodificarBase64(ConfiguraçãoFirebase.getFirebaseAuth().getCurrentUser().getEmail())).child(DateCustom.mesAno(dataEscolhida)).push().setValue(this);
+    }
+
+    public String getDataBD() {
+        return dataBD;
+    }
+
+    public void setDataBD(String dataBD) {
+        this.dataBD = dataBD;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getData() {
